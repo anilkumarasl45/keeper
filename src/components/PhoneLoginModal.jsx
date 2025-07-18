@@ -85,19 +85,19 @@ function PhoneLoginModal({ isOpen, onClose }) {
       className="space-y-6"
     >
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Phone className="w-8 h-8 text-white" />
+        <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <Phone className="w-10 h-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Enter Phone Number</h2>
-        <p className="text-gray-600">We'll send you a verification code</p>
+        <h2 className="text-3xl font-bold text-gray-800 mb-3">Enter Phone Number</h2>
+        <p className="text-gray-600 text-lg">We'll send you a verification code</p>
       </div>
 
-      <form onSubmit={handlePhoneSubmit} className="space-y-4">
-        <div className="flex space-x-3">
+      <form onSubmit={handlePhoneSubmit} className="space-y-6">
+        <div className="flex space-x-4">
           <select
             value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
-            className="px-3 py-3 border border-gray-300 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
+            className="px-4 py-4 border border-gray-300 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none text-lg"
           >
             <option value="+1">🇺🇸 +1</option>
             <option value="+44">🇬🇧 +44</option>
@@ -110,7 +110,7 @@ function PhoneLoginModal({ isOpen, onClose }) {
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="Phone number"
-            className="flex-1 input-field"
+            className="flex-1 input-field text-lg py-4"
             required
           />
         </div>
@@ -118,14 +118,14 @@ function PhoneLoginModal({ isOpen, onClose }) {
         <button
           type="submit"
           disabled={isLoading || !phoneNumber}
-          className="btn-primary w-full flex items-center justify-center space-x-2"
+          className="btn-primary w-full flex items-center justify-center space-x-2 py-4 text-lg"
         >
           {isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-6 h-6" />
           )}
-          <span>{isLoading ? 'Sending...' : 'Send Code'}</span>
+          <span className="font-semibold">{isLoading ? 'Sending...' : 'Send Code'}</span>
         </button>
       </form>
     </motion.div>
@@ -140,18 +140,18 @@ function PhoneLoginModal({ isOpen, onClose }) {
       className="space-y-6"
     >
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Shield className="w-8 h-8 text-white" />
+        <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <Shield className="w-10 h-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Verify Code</h2>
-        <p className="text-gray-600">
+        <h2 className="text-3xl font-bold text-gray-800 mb-3">Verify Code</h2>
+        <p className="text-gray-600 text-lg">
           Enter the 6-digit code sent to<br />
-          <span className="font-medium">{countryCode} {phoneNumber}</span>
+          <span className="font-semibold">{countryCode} {phoneNumber}</span>
         </p>
       </div>
 
       <form onSubmit={handleOtpSubmit} className="space-y-6">
-        <div className="flex justify-center space-x-3">
+        <div className="flex justify-center space-x-4">
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -159,33 +159,33 @@ function PhoneLoginModal({ isOpen, onClose }) {
               type="text"
               value={digit}
               onChange={(e) => handleOtpChange(index, e.target.value)}
-              className="w-12 h-12 text-center text-xl font-bold border border-gray-300 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
+              className="w-14 h-14 text-center text-2xl font-bold border border-gray-300 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
               maxLength={1}
             />
           ))}
         </div>
 
-        <div className="flex space-x-3">
+        <div className="flex space-x-4">
           <button
             type="button"
             onClick={() => setCurrentStep(STEPS.PHONE)}
-            className="btn-secondary flex items-center space-x-2"
+            className="btn-secondary flex items-center space-x-2 py-4 text-lg"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Back</span>
           </button>
           
           <button
             type="submit"
             disabled={isLoading || otp.some(digit => !digit)}
-            className="btn-primary flex-1 flex items-center justify-center space-x-2"
+            className="btn-primary flex-1 flex items-center justify-center space-x-2 py-4 text-lg"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-6 h-6" />
             )}
-            <span>{isLoading ? 'Verifying...' : 'Verify'}</span>
+            <span className="font-semibold">{isLoading ? 'Verifying...' : 'Verify'}</span>
           </button>
         </div>
       </form>
@@ -201,16 +201,16 @@ function PhoneLoginModal({ isOpen, onClose }) {
       className="space-y-6"
     >
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <User className="w-8 h-8 text-white" />
+        <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <User className="w-10 h-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Complete Profile</h2>
-        <p className="text-gray-600">Tell us a bit about yourself</p>
+        <h2 className="text-3xl font-bold text-gray-800 mb-3">Complete Profile</h2>
+        <p className="text-gray-600 text-lg">Tell us a bit about yourself</p>
       </div>
 
-      <form onSubmit={handleDetailsSubmit} className="space-y-4">
+      <form onSubmit={handleDetailsSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-base font-medium text-gray-700 mb-3">
             <User className="w-4 h-4 inline mr-2" />
             Full Name
           </label>
@@ -219,13 +219,13 @@ function PhoneLoginModal({ isOpen, onClose }) {
             value={userDetails.name}
             onChange={(e) => setUserDetails(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Enter your full name"
-            className="input-field"
+            className="input-field text-lg py-4"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-base font-medium text-gray-700 mb-3">
             <Mail className="w-4 h-4 inline mr-2" />
             Email Address
           </label>
@@ -234,32 +234,32 @@ function PhoneLoginModal({ isOpen, onClose }) {
             value={userDetails.email}
             onChange={(e) => setUserDetails(prev => ({ ...prev, email: e.target.value }))}
             placeholder="Enter your email"
-            className="input-field"
+            className="input-field text-lg py-4"
             required
           />
         </div>
 
-        <div className="flex space-x-3">
+        <div className="flex space-x-4">
           <button
             type="button"
             onClick={() => setCurrentStep(STEPS.OTP)}
-            className="btn-secondary flex items-center space-x-2"
+            className="btn-secondary flex items-center space-x-2 py-4 text-lg"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Back</span>
           </button>
           
           <button
             type="submit"
             disabled={isLoading || !userDetails.name || !userDetails.email}
-            className="btn-primary flex-1 flex items-center justify-center space-x-2"
+            className="btn-primary flex-1 flex items-center justify-center space-x-2 py-4 text-lg"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <User className="w-5 h-5" />
+              <User className="w-6 h-6" />
             )}
-            <span>{isLoading ? 'Creating Account...' : 'Complete Setup'}</span>
+            <span className="font-semibold">{isLoading ? 'Creating Account...' : 'Complete Setup'}</span>
           </button>
         </div>
       </form>
@@ -277,18 +277,18 @@ function PhoneLoginModal({ isOpen, onClose }) {
           onClick={handleClose}
         >
           <motion.div
-            className="glass-effect rounded-2xl p-6 w-full max-w-md"
+            className="glass-effect rounded-3xl p-8 w-full max-w-lg shadow-2xl border border-white/20"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-8">
               <div className="flex space-x-2">
                 {Object.values(STEPS).map((step, index) => (
                   <div
                     key={step}
-                    className={`w-2 h-2 rounded-full transition-colors ${
+                    className={`w-3 h-3 rounded-full transition-colors ${
                       Object.values(STEPS).indexOf(currentStep) >= index
                         ? 'bg-primary-500'
                         : 'bg-gray-300'
@@ -298,9 +298,9 @@ function PhoneLoginModal({ isOpen, onClose }) {
               </div>
               <button
                 onClick={handleClose}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="p-3 hover:bg-gray-100 rounded-xl transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 
