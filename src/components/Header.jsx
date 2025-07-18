@@ -1,10 +1,17 @@
 import { motion } from 'framer-motion'
 import { Highlighter, User, Settings } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ProfileModal from './ProfileModal'
 
 function Header() {
   const [showProfile, setShowProfile] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    // Check if user is logged in by checking for token
+    const token = localStorage.getItem("token")
+    setIsLoggedIn(!!token)
+  }, [])
 
   return (
     <>
@@ -28,15 +35,17 @@ function Header() {
             </h1>
           </motion.div>
           
-          <motion.button
-            onClick={() => setShowProfile(true)}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <User className="w-5 h-5 text-gray-600" />
-            <span className="text-gray-700 font-medium">Profile</span>
-          </motion.button>
+          {isLoggedIn && (
+            <motion.button
+              onClick={() => setShowProfile(true)}
+              className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <User className="w-5 h-5 text-gray-600" />
+              <span className="text-gray-700 font-medium">Profile</span>
+            </motion.button>
+          )}
         </div>
       </motion.header>
 

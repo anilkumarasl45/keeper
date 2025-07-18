@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Trash2, Edit3, Loader2, StickyNote } from 'lucide-react'
+import { useToast } from '../hooks/useToast'
+import ToastContainer from '../components/ToastContainer'
 import CreateArea from '../components/CreateArea'
 import NoteModal from '../components/NoteModal'
-import toast, { Toaster } from 'react-hot-toast'
+import parse from 'html-react-parser'
 
 function NoteArea() {
     const [notes, setNotes] = useState([])
@@ -13,6 +15,7 @@ function NoteArea() {
     const [updateData, setUpdateData] = useState({})
     const [loading, setLoading] = useState(false)
     const [noteUpdated, setNoteUpdated] = useState(false)
+    const { toasts, toast, removeToast } = useToast()
 
     useEffect(() => {
         async function fetchNotes() {
@@ -57,13 +60,9 @@ function NoteArea() {
 
     function showToast(success) {
         if (success) {
-            toast.success("Note updated successfully!", {
-                position: "bottom-right",
-            })
+            toast.success("Note updated successfully!")
         } else {
-            toast.error("Error updating note!", {
-                position: "bottom-right",
-            })
+            toast.error("Error updating note!")
         }
         setNoteUpdated(!noteUpdated)
     }
@@ -76,14 +75,10 @@ function NoteArea() {
             )
             
             if (data.success === true) {
-                toast.success("Note deleted successfully!", {
-                    position: "bottom-right",
-                })
+                toast.success("Note deleted successfully!")
                 setNoteUpdated(!noteUpdated)
             } else {
-                toast.error("Error deleting note!", {
-                    position: "bottom-right",
-                })
+                toast.error("Error deleting note!")
             }
         } catch (error) {
             console.error("Error deleting note:", error)
@@ -117,8 +112,35 @@ function NoteArea() {
         visible: { opacity: 1, y: 0 }
     }
 
+    const renderNoteContent = (note) => {
+        if (note.type === 'drawing') {
+            return (
+                <div className="mb-4">
+                    <img 
+                        src={note.content} 
+                        alt="Drawing" 
+                        className="w-full h-32 object-cover rounded-lg"
+                    />
+                </div>
+            )
+        } else {
+            // For text notes, render with HTML parsing to preserve styling
+            const styledContent = `<div style="
+                color: ${note.style?.color || '#000000'};
+                font-family: ${note.style?.fontFamily || 'Montserrat'};
+                font-size: ${note.style?.fontSize ? `${Math.max(parseInt(note.style.fontSize) - 2, 12)}px` : '14px'};
+            ">${note.content}</div>`
+            
+            return (
+                <div className="text-gray-700 mb-4 line-clamp-4 whitespace-pre-wrap">
+                    {parse(styledContent)}
+                </div>
+            )
+        }
+    }
     return (
-        <div className="max-w-7xl mx-auto px-6 pb-12">
+        <>
+            <div className="max-w-7xl mx-auto px-6 pb-12">
             <CreateArea update={update} />
             
             {loading ? (
@@ -163,7 +185,7 @@ function NoteArea() {
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
                                                     variants={noteVariants}
-                                                    className={`note-card p-6 cursor-grab active:cursor-grabbing ${
+                                                    className={`note-card p-6 cursor-grab active:cursor-grabbing min-h-[200px] ${
                                                         snapshot.isDragging ? 'rotate-3 scale-105' : ''
                                                     }`}
                                                     style={{
@@ -183,16 +205,7 @@ function NoteArea() {
                                                     >
                                                         {note.title}
                                                     </h2>
-                                                    <p 
-                                                        className="text-gray-700 mb-4 line-clamp-4 whitespace-pre-wrap"
-                                                        style={{
-                                                            color: note.style?.color || '#000000',
-                                                            fontFamily: note.style?.fontFamily || 'Montserrat',
-                                                            fontSize: note.style?.fontSize ? `${Math.max(parseInt(note.style.fontSize) - 2, 12)}px` : '14px'
-                                                        }}
-                                                    >
-                                                        {note.content}
-                                                    </p>
+                                                    {renderNoteContent(note)}
                                                     
                                                     <div className="flex items-center justify-end space-x-2 pt-4 border-t border-gray-100">
                                                         <motion.button
@@ -241,9 +254,9 @@ function NoteArea() {
                     />
                 )}
             </AnimatePresence>
-            
-            <Toaster />
         </div>
+        <ToastContainer toasts={toasts} removeToast={removeToast} />
+        </>
     )
 }
 
