@@ -28,7 +28,6 @@ function Login() {
             const { data } = await axios.post(
                 `${import.meta.env.VITE_SERVER_API}/login`,
                 { email, password },
-                { withCredentials: true }
             )
 
             if (data.success === true) {
