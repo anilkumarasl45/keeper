@@ -1,151 +1,159 @@
-import { useRef, useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Palette, Eraser, Download, Trash2, Undo, Redo } from 'lucide-react'
+import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Palette, Eraser, Download, Trash2, Undo, Redo } from "lucide-react";
 
 function DrawingCanvas({ onSave, initialDrawing = null }) {
-  const canvasRef = useRef(null)
-  const [isDrawing, setIsDrawing] = useState(false)
-  const [brushColor, setBrushColor] = useState('#000000')
-  const [brushSize, setBrushSize] = useState(3)
-  const [tool, setTool] = useState('brush') // brush or eraser
-  const [history, setHistory] = useState([])
-  const [historyIndex, setHistoryIndex] = useState(-1)
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [brushColor, setBrushColor] = useState("#000000");
+  const [brushSize, setBrushSize] = useState(3);
+  const [tool, setTool] = useState("brush"); // brush or eraser
+  const [history, setHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
   const colors = [
-    '#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00',
-    '#FF00FF', '#00FFFF', '#FFA500', '#800080', '#FFC0CB'
-  ]
+    "#000000",
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFFF00",
+    "#FF00FF",
+    "#00FFFF",
+    "#FFA500",
+    "#800080",
+    "#FFC0CB",
+  ];
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
     // Set canvas size
-    canvas.width = 600
-    canvas.height = 400
-    
+    canvas.width = 600;
+    canvas.height = 400;
+
     // Set default styles
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
-    
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
     // Load initial drawing if provided
     if (initialDrawing) {
-      const img = new Image()
+      const img = new Image();
       img.onload = () => {
-        ctx.drawImage(img, 0, 0)
-        saveToHistory()
-      }
-      img.src = initialDrawing
+        ctx.drawImage(img, 0, 0);
+        saveToHistory();
+      };
+      img.src = initialDrawing;
     } else {
       // Clear canvas with white background
-      ctx.fillStyle = '#FFFFFF'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-      saveToHistory()
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      saveToHistory();
     }
-  }, [initialDrawing])
+  }, [initialDrawing]);
 
   const saveToHistory = () => {
-    const canvas = canvasRef.current
-    const dataURL = canvas.toDataURL()
-    const newHistory = history.slice(0, historyIndex + 1)
-    newHistory.push(dataURL)
-    setHistory(newHistory)
-    setHistoryIndex(newHistory.length - 1)
-  }
+    const canvas = canvasRef.current;
+    const dataURL = canvas.toDataURL();
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(dataURL);
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+  };
 
   const startDrawing = (e) => {
-    setIsDrawing(true)
-    const canvas = canvasRef.current
-    const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    
-    const ctx = canvas.getContext('2d')
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-  }
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const ctx = canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
 
   const draw = (e) => {
-    if (!isDrawing) return
-    
-    const canvas = canvasRef.current
-    const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    
-    const ctx = canvas.getContext('2d')
-    
-    if (tool === 'eraser') {
-      ctx.globalCompositeOperation = 'destination-out'
-      ctx.lineWidth = brushSize * 2
+    if (!isDrawing) return;
+
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const ctx = canvas.getContext("2d");
+
+    if (tool === "eraser") {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = brushSize * 2;
     } else {
-      ctx.globalCompositeOperation = 'source-over'
-      ctx.strokeStyle = brushColor
-      ctx.lineWidth = brushSize
+      ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = brushColor;
+      ctx.lineWidth = brushSize;
     }
-    
-    ctx.lineTo(x, y)
-    ctx.stroke()
-  }
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
 
   const stopDrawing = () => {
     if (isDrawing) {
-      setIsDrawing(false)
-      saveToHistory()
+      setIsDrawing(false);
+      saveToHistory();
     }
-  }
+  };
 
   const clearCanvas = () => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    ctx.fillStyle = '#FFFFFF'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    saveToHistory()
-  }
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    saveToHistory();
+  };
 
   const undo = () => {
     if (historyIndex > 0) {
-      const newIndex = historyIndex - 1
-      setHistoryIndex(newIndex)
-      const canvas = canvasRef.current
-      const ctx = canvas.getContext('2d')
-      const img = new Image()
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
       img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(img, 0, 0)
-      }
-      img.src = history[newIndex]
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = history[newIndex];
     }
-  }
+  };
 
   const redo = () => {
     if (historyIndex < history.length - 1) {
-      const newIndex = historyIndex + 1
-      setHistoryIndex(newIndex)
-      const canvas = canvasRef.current
-      const ctx = canvas.getContext('2d')
-      const img = new Image()
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
       img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(img, 0, 0)
-      }
-      img.src = history[newIndex]
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = history[newIndex];
     }
-  }
+  };
 
   const saveDrawing = () => {
-    const canvas = canvasRef.current
-    const dataURL = canvas.toDataURL()
-    onSave(dataURL)
-  }
+    const canvas = canvasRef.current;
+    const dataURL = canvas.toDataURL();
+    onSave(dataURL);
+  };
 
   const downloadDrawing = () => {
-    const canvas = canvasRef.current
-    const link = document.createElement('a')
-    link.download = 'drawing.png'
-    link.href = canvas.toDataURL()
-    link.click()
-  }
+    const canvas = canvasRef.current;
+    const link = document.createElement("a");
+    link.download = "drawing.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  };
 
   return (
     <div className="space-y-4">
@@ -156,9 +164,11 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
           <div className="flex space-x-2">
             <motion.button
               type="button"
-              onClick={() => setTool('brush')}
+              onClick={() => setTool("brush")}
               className={`p-2 rounded-lg transition-colors ${
-                tool === 'brush' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600'
+                tool === "brush"
+                  ? "bg-primary-500 text-white"
+                  : "bg-gray-100 text-gray-600"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -167,9 +177,11 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
             </motion.button>
             <motion.button
               type="button"
-              onClick={() => setTool('eraser')}
+              onClick={() => setTool("eraser")}
               className={`p-2 rounded-lg transition-colors ${
-                tool === 'eraser' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600'
+                tool === "eraser"
+                  ? "bg-primary-500 text-white"
+                  : "bg-gray-100 text-gray-600"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -186,7 +198,9 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
                 type="button"
                 onClick={() => setBrushColor(color)}
                 className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                  brushColor === color ? 'border-gray-800 scale-110' : 'border-gray-300'
+                  brushColor === color
+                    ? "border-gray-800 scale-110"
+                    : "border-gray-300"
                 }`}
                 style={{ backgroundColor: color }}
               />
@@ -260,7 +274,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
           className="border-2 border-gray-300 rounded-xl cursor-crosshair bg-white shadow-lg"
-          style={{ maxWidth: '100%', height: 'auto' }}
+          style={{ maxWidth: "100%", height: "auto" }}
         />
       </div>
 
@@ -277,7 +291,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
         </motion.button>
       </div>
     </div>
-  )
+  );
 }
 
-export default DrawingCanvas
+export default DrawingCanvas;
