@@ -47,8 +47,7 @@ function CreateArea({ update }) {
                     content: content,
                     style: noteStyle,
                     type: noteType
-                },
-                { withCredentials: true }
+                }
             )
             
             update()
