@@ -32,8 +32,7 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
                     content: content,
                     style: noteStyle,
                     type: noteType
-                },
-                { withCredentials: true }
+                }
             )
             showToast(data.success)
             closeModal()
