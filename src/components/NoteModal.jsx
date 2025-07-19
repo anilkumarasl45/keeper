@@ -25,6 +25,12 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
         setIsLoading(true)
         
         try {
+            const token = localStorage.getItem("token")
+            if (!token) {
+                navigate("/login")
+                return
+            }
+            
             const { data } = await axios.put(
                 `${import.meta.env.VITE_SERVER_API}/notes/${note._id}`,
                 { 
@@ -32,6 +38,11 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
                     content: content,
                     style: noteStyle,
                     type: noteType
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             )
             showToast(data.success)
@@ -68,6 +79,7 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
                         <div className="flex items-center justify-between p-8 border-b border-gray-200/50 bg-gradient-to-r from-primary-50 to-primary-100">
                             <h2 className="text-2xl font-bold text-gray-800">Edit Note</h2>
                             <button
+                                type="button"
                                 onClick={closeModal}
                                 className="p-3 hover:bg-white/50 rounded-xl transition-colors"
                             >

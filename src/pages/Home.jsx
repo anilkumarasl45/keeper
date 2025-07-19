@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import axios from "axios";
 import NoteArea from "./Note";
 
@@ -47,16 +47,6 @@ function Home() {
     verifyUser();
   }, [navigate]);
 
-  async function logout() {
-    try {
-      setShowNotes(false);
-      localStorage.removeItem("token");
-      navigate("/login");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  }
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -93,19 +83,6 @@ function Home() {
               Ready to capture your thoughts?
             </p>
           </motion.div>
-
-          <motion.button
-            onClick={logout}
-            className="btn-secondary flex items-center space-x-2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </motion.button>
         </motion.div>
       )}
 

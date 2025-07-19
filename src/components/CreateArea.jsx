@@ -15,6 +15,7 @@ function CreateArea({ update }) {
   const [showFontSelector, setShowFontSelector] = useState(false);
   const [showDrawing, setShowDrawing] = useState(false);
   const [noteType, setNoteType] = useState("text"); // 'text' or 'drawing'
+  const [drawingData, setDrawingData] = useState(null);
   const [noteStyle, setNoteStyle] = useState({
     color: "#000000",
     backgroundColor: "#ffffff",
@@ -31,9 +32,9 @@ function CreateArea({ update }) {
     setCreatingNote(true);
 
     const title = titleRef.current.value;
-    const content = noteType === "text" ? contentRef.current.value : "";
+    const content = noteType === "text" ? contentRef.current.value : drawingData;
 
-    if (!title.trim() && !content.trim() && noteType === "text") {
+    if (!title.trim() && (!content || !content.trim())) {
       toast.error("Please add some content to your note!");
       setCreatingNote(false);
       return;
@@ -68,6 +69,7 @@ function CreateArea({ update }) {
         toast.success("Note created successfully!");
         titleRef.current.value = "";
         if (contentRef.current) contentRef.current.value = "";
+        setDrawingData(null);
         setExpanded(false);
         setShowDrawing(false);
         setNoteType("text");
@@ -88,51 +90,10 @@ function CreateArea({ update }) {
     setCreatingNote(false);
   }
 
-  async function saveDrawing(drawingData) {
-    setCreatingNote(true);
-
-    const title = titleRef.current.value || "Drawing Note";
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_SERVER_API}/notes`,
-        {
-          title: title,
-          content: drawingData,
-          style: noteStyle,
-          type: "drawing",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      update();
-
-      if (data.success === true) {
-        toast.success("Drawing saved successfully!");
-        titleRef.current.value = "";
-        setExpanded(false);
-        setShowDrawing(false);
-        setNoteType("text");
-      } else {
-        toast.error("Error saving drawing!");
-      }
-    } catch (error) {
-      console.error("Error saving drawing:", error);
-      toast.error("Something went wrong!");
-    }
-
-    setCreatingNote(false);
+  function handleDrawingSave(data) {
+    setDrawingData(data);
   }
+
   function expand() {
     setExpanded(true);
   }
@@ -146,6 +107,7 @@ function CreateArea({ update }) {
     <>
       <div className="max-w-4xl mx-auto px-4 py-8">
         <motion.form
+          onSubmit={submitNote}
           className="glass-effect rounded-3xl p-8 shadow-2xl border border-white/20"
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -228,13 +190,13 @@ function CreateArea({ update }) {
                   />
                 ) : (
                   <div className="mb-6">
-                    <DrawingCanvas onSave={saveDrawing} />
+                    <DrawingCanvas onSave={handleDrawingSave} />
                   </div>
                 )}
 
                 {/* Toolbar */}
-                {noteType === "text" && (
-                  <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                  {noteType === "text" && (
                     <div className="flex items-center space-x-2">
                       <div className="relative">
                         <motion.button
@@ -280,10 +242,13 @@ function CreateArea({ update }) {
                         </AnimatePresence>
                       </div>
                     </div>
+                  )}
 
+                  {noteType === "text" && <div></div>}
+
+                  <div className="flex justify-end">
                     <motion.button
                       type="submit"
-                      onClick={submitNote}
                       disabled={creatingNote}
                       className="btn-primary flex items-center space-x-2 px-8 py-3 text-lg"
                       whileHover={{ scale: 1.05 }}
@@ -294,10 +259,10 @@ function CreateArea({ update }) {
                       ) : (
                         <Plus className="w-4 h-4" />
                       )}
-                      <span>{creatingNote ? "Creating..." : "Add Note"}</span>
+                      <span>{creatingNote ? "Saving..." : noteType === "drawing" ? "Save Drawing" : "Add Note"}</span>
                     </motion.button>
                   </div>
-                )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

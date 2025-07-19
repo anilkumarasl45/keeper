@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Trash2, Edit3, Loader2, StickyNote } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
 import ToastContainer from "../components/ToastContainer";
 import CreateArea from "../components/CreateArea";
@@ -14,8 +15,10 @@ function NoteArea() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [updateData, setUpdateData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(null);
   const [noteUpdated, setNoteUpdated] = useState(false);
   const { toasts, toast, removeToast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchNotes() {
@@ -90,6 +93,7 @@ function NoteArea() {
   }
 
   async function deleteHandler(id) {
+    setDeleteLoading(id);
     try {
       const token = localStorage.getItem("token");
 
@@ -115,6 +119,8 @@ function NoteArea() {
     } catch (error) {
       console.error("Error deleting note:", error);
       toast.error("Failed to delete note!");
+    } finally {
+      setDeleteLoading(null);
     }
   }
 
@@ -157,19 +163,18 @@ function NoteArea() {
       );
     } else {
       // For text notes, render with HTML parsing to preserve styling
-      const styledContent = `<div style="
-                color: ${note.style?.color || "#000000"};
-                font-family: ${note.style?.fontFamily || "Montserrat"};
-                font-size: ${
-                  note.style?.fontSize
-                    ? `${Math.max(parseInt(note.style.fontSize) - 2, 12)}px`
-                    : "14px"
-                };
-            ">${note.content}</div>`;
+      const styledContent = note.content || '';
 
       return (
-        <div className="text-gray-700 mb-4 line-clamp-4 whitespace-pre-wrap">
-          {parse(styledContent)}
+        <div 
+          className="mb-4 line-clamp-4 whitespace-pre-wrap"
+          style={{
+            color: note.style?.color || "#000000",
+            fontFamily: note.style?.fontFamily || "Montserrat",
+            fontSize: note.style?.fontSize ? `${Math.max(parseInt(note.style.fontSize) - 2, 12)}px` : "14px"
+          }}
+        >
+          {styledContent}
         </div>
       );
     }
@@ -273,11 +278,16 @@ function NoteArea() {
                                   e.stopPropagation();
                                   deleteHandler(note._id);
                                 }}
+                                disabled={deleteLoading === note._id}
                                 className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                               >
-                                <Trash2 className="w-4 h-4" />
+                                {deleteLoading === note._id ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-4 h-4" />
+                                )}
                               </motion.button>
                             </div>
                           </motion.div>
