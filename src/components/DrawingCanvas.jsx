@@ -155,6 +155,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
           {/* Tool Selection */}
           <div className="flex space-x-2">
             <motion.button
+              type="button"
               onClick={() => setTool('brush')}
               className={`p-2 rounded-lg transition-colors ${
                 tool === 'brush' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600'
@@ -165,6 +166,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
               <Palette className="w-4 h-4" />
             </motion.button>
             <motion.button
+              type="button"
               onClick={() => setTool('eraser')}
               className={`p-2 rounded-lg transition-colors ${
                 tool === 'eraser' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600'
@@ -181,6 +183,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
             {colors.map((color) => (
               <button
                 key={color}
+                type="button"
                 onClick={() => setBrushColor(color)}
                 className={`w-6 h-6 rounded-full border-2 transition-transform ${
                   brushColor === color ? 'border-gray-800 scale-110' : 'border-gray-300'
@@ -208,6 +211,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
           <motion.button
+            type="button"
             onClick={undo}
             disabled={historyIndex <= 0}
             className="p-2 rounded-lg bg-gray-100 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -217,6 +221,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
             <Undo className="w-4 h-4" />
           </motion.button>
           <motion.button
+            type="button"
             onClick={redo}
             disabled={historyIndex >= history.length - 1}
             className="p-2 rounded-lg bg-gray-100 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -226,6 +231,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
             <Redo className="w-4 h-4" />
           </motion.button>
           <motion.button
+            type="button"
             onClick={clearCanvas}
             className="p-2 rounded-lg bg-red-100 text-red-600"
             whileHover={{ scale: 1.05 }}
@@ -234,6 +240,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
             <Trash2 className="w-4 h-4" />
           </motion.button>
           <motion.button
+            type="button"
             onClick={downloadDrawing}
             className="p-2 rounded-lg bg-blue-100 text-blue-600"
             whileHover={{ scale: 1.05 }}
@@ -260,6 +267,7 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
       {/* Save Button */}
       <div className="flex justify-center">
         <motion.button
+          type="button"
           onClick={saveDrawing}
           className="btn-primary px-8 py-3"
           whileHover={{ scale: 1.05 }}

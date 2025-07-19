@@ -53,6 +53,7 @@ function FontSelector({ noteStyle, setNoteStyle, onClose }) {
           {fontSizes.map(size => (
             <motion.button
               key={size}
+              type="button"
               onClick={() => updateFont('fontSize', size.toString())}
               className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
                 noteStyle.fontSize === size.toString()
@@ -84,6 +85,7 @@ function FontSelector({ noteStyle, setNoteStyle, onClose }) {
       </div>
       
       <button
+        type="button"
         onClick={onClose}
         className="w-full btn-primary text-sm py-2"
       >

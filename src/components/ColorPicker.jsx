@@ -48,6 +48,7 @@ function ColorPicker({ noteStyle, setNoteStyle, onClose }) {
         {presetColors.map((preset) => (
           <motion.button
             key={preset.name}
+            type="button"
             onClick={() => applyPresetColor(preset)}
             className="w-12 h-12 rounded-lg border-2 border-gray-200 hover:border-primary-400 transition-colors"
             style={{ backgroundColor: preset.bg }}
@@ -104,6 +105,7 @@ function ColorPicker({ noteStyle, setNoteStyle, onClose }) {
         </div>
         
         <button
+          type="button"
           onClick={applyCustomColors}
           className="w-full btn-primary text-sm py-2"
         >
