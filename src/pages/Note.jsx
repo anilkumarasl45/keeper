@@ -22,8 +22,7 @@ function NoteArea() {
             setLoading(true)
             try {
                 const { data } = await axios.get(
-                    `${import.meta.env.VITE_SERVER_API}/notes`,
-                    { withCredentials: true }
+                    `${import.meta.env.VITE_SERVER_API}/notes`
                 )
                 setNotes(data.notes || [])
             } catch (error) {
@@ -42,8 +41,7 @@ function NoteArea() {
     async function editHandler(id) {
         try {
             const { data } = await axios.get(
-                `${import.meta.env.VITE_SERVER_API}/notes/${id}`,
-                { withCredentials: true }
+                `${import.meta.env.VITE_SERVER_API}/notes/${id}`
             )
             setUpdateData(data.note)
             setIsOpen(true)
@@ -70,8 +68,7 @@ function NoteArea() {
     async function deleteHandler(id) {
         try {
             const { data } = await axios.delete(
-                `${import.meta.env.VITE_SERVER_API}/notes/${id}`,
-                { withCredentials: true }
+                `${import.meta.env.VITE_SERVER_API}/notes/${id}`
             )
             
             if (data.success === true) {
