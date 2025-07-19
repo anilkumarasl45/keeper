@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Trash2, Edit3, Loader2, StickyNote } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
@@ -128,17 +127,6 @@ function NoteArea() {
     }
   }
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(notes);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setNotes(items);
-    // Here you could also save the new order to the backend
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -214,101 +202,77 @@ function NoteArea() {
             </p>
           </motion.div>
         ) : (
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="notes">
-              {(provided) => (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <AnimatePresence>
+              {notes.map((note) => (
                 <motion.div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
+                  key={note._id}
+                  variants={noteVariants}
+                  className="note-card p-6 min-h-[200px]"
+                  style={{
+                    backgroundColor: note.style?.backgroundColor || "#ffffff",
+                  }}
+                  whileHover={{ y: -4 }}
+                  layout
                 >
-                  <AnimatePresence>
-                    {notes.map((note, index) => (
-                      <Draggable
-                        key={note._id}
-                        draggableId={note._id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <motion.div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            variants={noteVariants}
-                            className={`note-card p-6 cursor-grab active:cursor-grabbing min-h-[200px] ${
-                              snapshot.isDragging ? "rotate-3 scale-105" : ""
-                            }`}
-                            style={{
-                              backgroundColor:
-                                note.style?.backgroundColor || "#ffffff",
-                              ...provided.draggableProps.style,
-                            }}
-                            whileHover={{ y: -4 }}
-                            layout
-                          >
-                            <h2
-                              className="text-lg font-semibold mb-3 line-clamp-2"
-                              style={{
-                                color: note.style?.color || "#000000",
-                                fontFamily:
-                                  note.style?.fontFamily || "Montserrat",
-                                fontSize: note.style?.fontSize
-                                  ? `${note.style.fontSize}px`
-                                  : "18px",
-                              }}
-                            >
-                              {note.title}
-                            </h2>
-                            {renderNoteContent(note)}
+                  <h2
+                    className="text-lg font-semibold mb-3 line-clamp-2"
+                    style={{
+                      color: note.style?.color || "#000000",
+                      fontFamily: note.style?.fontFamily || "Montserrat",
+                      fontSize: note.style?.fontSize
+                        ? `${note.style.fontSize}px`
+                        : "18px",
+                    }}
+                  >
+                    {note.title}
+                  </h2>
+                  {renderNoteContent(note)}
 
-                            <div className="flex items-center justify-end space-x-2 pt-4 border-t border-gray-100">
-                              <motion.button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  editHandler(note._id);
-                                }}
-                                disabled={editLoading === note._id}
-                                className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                              >
-                                {editLoading === note._id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Edit3 className="w-4 h-4" />
-                                )}
-                              </motion.button>
+                  <div className="flex items-center justify-end space-x-2 pt-4 border-t border-gray-100">
+                    <motion.button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        editHandler(note._id);
+                      }}
+                      disabled={editLoading === note._id}
+                      className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      {editLoading === note._id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Edit3 className="w-4 h-4" />
+                      )}
+                    </motion.button>
 
-                              <motion.button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteHandler(note._id);
-                                }}
-                                disabled={deleteLoading === note._id}
-                                className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                              >
-                                {deleteLoading === note._id ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Trash2 className="w-4 h-4" />
-                                )}
-                              </motion.button>
-                            </div>
-                          </motion.div>
-                        )}
-                      </Draggable>
-                    ))}
-                  </AnimatePresence>
-                  {provided.placeholder}
+                    <motion.button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteHandler(note._id);
+                      }}
+                      disabled={deleteLoading === note._id}
+                      className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      {deleteLoading === note._id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </motion.button>
+                  </div>
                 </motion.div>
-              )}
-            </Droppable>
-          </DragDropContext>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
 
         <AnimatePresence>
