@@ -144,7 +144,9 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
   const saveDrawing = () => {
     const canvas = canvasRef.current;
     const dataURL = canvas.toDataURL();
-    onSave(dataURL);
+    if (onSave) {
+      onSave(dataURL);
+    }
   };
 
   const downloadDrawing = () => {
@@ -279,17 +281,19 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-center">
-        <motion.button
-          type="button"
-          onClick={saveDrawing}
-          className="btn-primary px-8 py-3"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Save Drawing
-        </motion.button>
-      </div>
+      {onSave && (
+        <div className="flex justify-center">
+          <motion.button
+            type="button"
+            onClick={saveDrawing}
+            className="btn-primary px-8 py-3"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Save Drawing
+          </motion.button>
+        </div>
+      )}
     </div>
   );
 }

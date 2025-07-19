@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Trash2, Edit3, Loader2, StickyNote } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/useToast";
@@ -15,6 +15,7 @@ function NoteArea() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [updateData, setUpdateData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [noteUpdated, setNoteUpdated] = useState(false);
   const { toasts, toast, removeToast } = useToast();
@@ -55,6 +56,7 @@ function NoteArea() {
   }
 
   async function editHandler(id) {
+    setEditLoading(id);
     try {
       const token = localStorage.getItem("token");
 
@@ -75,6 +77,8 @@ function NoteArea() {
     } catch (error) {
       console.error("Error fetching note:", error);
       toast.error("Failed to load note");
+    } finally {
+      setEditLoading(null);
     }
   }
 
@@ -266,11 +270,16 @@ function NoteArea() {
                                   e.stopPropagation();
                                   editHandler(note._id);
                                 }}
+                                disabled={editLoading === note._id}
                                 className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                               >
-                                <Edit3 className="w-4 h-4" />
+                                {editLoading === note._id ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <Edit3 className="w-4 h-4" />
+                                )}
                               </motion.button>
 
                               <motion.button
