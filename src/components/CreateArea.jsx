@@ -89,8 +89,7 @@ function CreateArea({ update }) {
                     content: drawingData,
                     style: noteStyle,
                     type: 'drawing'
-                },
-                { withCredentials: true }
+                }
             )
             
             update()
