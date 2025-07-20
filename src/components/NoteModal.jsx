@@ -46,7 +46,9 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
                 }
             )
             showToast(data.success)
-            closeModal()
+            if (data.success) {
+                closeModal()
+            }
         } catch (error) {
             console.error("Error updating note:", error)
             showToast(false)

@@ -63,10 +63,9 @@ function CreateArea({ update }) {
 
       console.log(data);
 
-      update();
-
       if (data.success === true) {
         toast.success("Note created successfully!");
+        update(); // Refresh notes list after creation
         titleRef.current.value = "";
         if (contentRef.current) contentRef.current.value = "";
         setDrawingData(null);

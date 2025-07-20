@@ -89,10 +89,10 @@ function NoteArea() {
   function showToast(success) {
     if (success) {
       toast.success("Note updated successfully!");
+      setNoteUpdated(!noteUpdated); // Refresh notes list after update
     } else {
       toast.error("Error updating note!");
     }
-    setNoteUpdated(!noteUpdated);
   }
 
   async function deleteHandler(id) {
