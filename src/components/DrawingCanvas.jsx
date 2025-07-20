@@ -281,19 +281,6 @@ function DrawingCanvas({ onSave, initialDrawing = null }) {
       </div>
 
       {/* Save Button */}
-      {onSave && (
-        <div className="flex justify-center">
-          <motion.button
-            type="button"
-            onClick={saveDrawing}
-            className="btn-primary px-8 py-3"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Save Drawing
-          </motion.button>
-        </div>
-      )}
     </div>
   );
 }
