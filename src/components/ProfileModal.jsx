@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, User, Mail } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import ProfileAvatar from './ProfileAvatar'
 
 function ProfileModal({ isOpen, onClose }) {
   const [profile, setProfile] = useState({
@@ -80,9 +81,8 @@ function ProfileModal({ isOpen, onClose }) {
               <div className="space-y-6">
                 {/* Avatar Section */}
                 <div className="flex flex-col items-center">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
-                    <User className="w-12 h-12 text-white" />
-                  </div>
+                  <ProfileAvatar name={profile.name} size="xl" className="mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-800">{profile.name}</h3>
                 </div>
 
                 {/* Profile Fields */}

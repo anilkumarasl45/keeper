@@ -32,6 +32,9 @@ function Login() {
 
       if (data.success === true) {
         localStorage.setItem("token", data.token);
+        // Store user info for profile avatar
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", email.split('@')[0]);
         toast.success("Welcome back!");
         setTimeout(() => {
           navigate("/");

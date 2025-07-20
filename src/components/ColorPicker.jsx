@@ -36,10 +36,14 @@ function ColorPicker({ noteStyle, setNoteStyle, onClose }) {
 
   return (
     <motion.div
-      className="absolute top-12 left-0 glass-effect rounded-xl p-4 shadow-xl z-[9999] w-64"
+      className="fixed top-12 left-0 glass-effect rounded-xl p-4 shadow-xl z-[9999] w-64"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
+      style={{
+        position: 'fixed',
+        zIndex: 9999
+      }}
     >
       <h3 className="font-medium text-gray-800 mb-3">Choose Color</h3>
       

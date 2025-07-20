@@ -2,17 +2,32 @@ import { motion } from 'framer-motion'
 import { Highlighter, User, LogOut } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ProfileAvatar from './ProfileAvatar'
 import ProfileModal from './ProfileModal'
 
 function Header() {
   const [showProfile, setShowProfile] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userName, setUserName] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     // Check if user is logged in by checking for token
     const token = localStorage.getItem("token")
     setIsLoggedIn(!!token)
+    
+    // Get user name from localStorage or API
+    if (token) {
+      // You can fetch this from your API or store it during login
+      const storedName = localStorage.getItem("userName")
+      if (storedName) {
+        setUserName(storedName)
+      } else {
+        // Fallback to email-based name
+        const email = localStorage.getItem("userEmail") || "User"
+        setUserName(email.split('@')[0])
+      }
+    }
   }, [])
 
   const handleLogout = () => {
@@ -46,11 +61,11 @@ function Header() {
             <div className="flex items-center space-x-3">
               <motion.button
                 onClick={() => setShowProfile(true)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
+                className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-white/80 hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <User className="w-5 h-5 text-gray-600" />
+                <ProfileAvatar name={userName} size="sm" />
                 <span className="text-gray-700 font-medium">Profile</span>
               </motion.button>
               

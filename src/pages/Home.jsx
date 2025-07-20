@@ -33,6 +33,9 @@ function Home() {
 
         if (data.success === true) {
           setUsername(data.username.split("@")[0]);
+          // Store user info for profile avatar
+          localStorage.setItem("userEmail", data.username);
+          localStorage.setItem("userName", data.username.split("@")[0]);
           setShowNotes(true);
         } else {
           navigate("/login");
