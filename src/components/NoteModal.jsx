@@ -94,12 +94,13 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
                                 <div className="flex space-x-2 mb-6">
                                     <motion.button
                                         type="button"
-                                        onClick={() => setNoteType('text')}
+                                        onClick={() => {}}
                                         className={`px-4 py-2 rounded-xl font-medium transition-all ${
                                             noteType === 'text' 
                                                 ? 'bg-primary-500 text-white shadow-lg' 
-                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                         }`}
+                                        disabled={noteType !== 'text'}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                     >
@@ -108,12 +109,13 @@ function NoteModal({ isOpen, note, closeModal, showToast }) {
                                     </motion.button>
                                     <motion.button
                                         type="button"
-                                        onClick={() => setNoteType('drawing')}
+                                        onClick={() => {}}
                                         className={`px-4 py-2 rounded-xl font-medium transition-all ${
                                             noteType === 'drawing' 
                                                 ? 'bg-primary-500 text-white shadow-lg' 
-                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                         }`}
+                                        disabled={noteType !== 'drawing'}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                     >
